@@ -1,0 +1,7 @@
+# Decisões de arquitetura com CAP
+
+1. Tabela de saldo bancário de clientes | CP | O saldo precisa ser sempre exato e igual em todos os nós, senão há risco de gasto duplo ou saldo errado. Prefere ficar indisponível por instantes a mostrar um valor incorreto.
+2. Ingestão de 500 mil eventos de firewall por minuto num SOC | AP | O volume é enorme e o sistema não pode parar de receber logs, senão perde eventos. Uma pequena inconsistência temporária é aceitável, pois os dados convergem depois.
+3. Cache de tokens de sessão de usuários logados | AP | Sessão é dado temporário e precisa de resposta rápida e sempre disponível, senão os usuários são deslogados. Se um token ficar desatualizado por instantes, o impacto é pequeno (sessões críticas poderiam usar CP).
+4. Registro de quem autorizou cada transferência (auditoria) | CP | A trilha de auditoria precisa ser íntegra e consistente em todos os nós, pois é usada como prova. Perder ou divergir um registro compromete a validade da auditoria.
+5. Feed de indicadores de ameaça (IOCs) replicado em 5 regiões | AP | Cada região precisa continuar consultando os IOCs mesmo se a comunicação entre elas cair. Um IOC novo chegar com alguns segundos de atraso é aceitável.
